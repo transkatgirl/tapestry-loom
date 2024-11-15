@@ -9,16 +9,7 @@ use uuid::Uuid;
 pub struct Document {
     pub tree: Node,
     pub authors: HashMap<Uuid, String>,
-    pub models: HashMap<Uuid, String>,
-}
-
-impl Document {}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Generator {
-    pub label: String,
-    pub backend: String,
-    pub config: Value,
+    pub generators: HashMap<Uuid, String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
