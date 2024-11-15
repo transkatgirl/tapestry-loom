@@ -1,2 +1,2 @@
 # tapestry-loom
-A branching LLM frontend
+A powerful branching LLM frontend (work in progress!)
