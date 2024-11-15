@@ -20,6 +20,15 @@ pub struct Node {
     pub contents: Vec<NodeContent>,
 }
 
+impl Node {
+    pub fn shallow_clone(&self) -> Self {
+        Self {
+            children: Vec::new(),
+            contents: self.contents.clone(),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum NodeContent {
     Written(Authored<Value>),
