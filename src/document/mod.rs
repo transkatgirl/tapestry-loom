@@ -1,14 +1,23 @@
 use std::{fmt::Display, sync::Arc};
 
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
 use tokio::sync::{OwnedRwLockReadGuard, OwnedRwLockWriteGuard, RwLock};
 
 pub mod content;
 
 use content::{Content, SharedMetadata};
 
+#[derive(Debug, Default)]
+pub struct DocumentManager<I, F, O>
+where
+    I: Serialize + DeserializeOwned + Send + Sync + Clone + Display,
+    F: Serialize + DeserializeOwned + Send + Sync + Clone,
+    O: Serialize + DeserializeOwned + Send + Sync + Clone + Display,
+{
+    pub documents: Wrapper<Vec<Document<I, F, O>>>,
+}
+
 #[derive(Serialize, Deserialize, Debug, Default)]
-#[allow(clippy::type_complexity)]
 pub struct Document<I, F, O>
 where
     I: Send + Sync + Clone + Display,

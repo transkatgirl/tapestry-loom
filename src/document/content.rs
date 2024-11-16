@@ -15,6 +15,7 @@ pub enum Content<I: Display, F, O: Display> {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct SharedMetadata {
+    pub title: Option<String>,
     pub authors: HashMap<Uuid, String>,
     pub generators: HashMap<Uuid, String>,
 }
