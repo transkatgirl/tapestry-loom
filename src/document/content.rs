@@ -1,15 +1,14 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Display};
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum Content {
-    Written(Authored<Value>),
+pub enum Content<I: Display, F, O: Display> {
+    Written(Authored<I>),
     Comment(Authored<String>),
-    Generated(Generated<Value, Value>),
+    Generated(Generated<F, O>),
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -25,10 +24,10 @@ pub struct Authored<T> {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
-pub struct Generated<I, O> {
+pub struct Generated<T, O> {
     pub generator: Uuid,
     pub start: DateTime<Utc>,
     pub finish: DateTime<Utc>,
-    pub input: I,
+    pub config: T,
     pub output: O,
 }
