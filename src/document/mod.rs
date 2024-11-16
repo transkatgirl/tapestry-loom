@@ -15,7 +15,7 @@ where
     F: Send + Sync + Clone,
     O: Send + Sync + Clone + Display,
 {
-    tree: Wrapper<Vec<Wrapper<Node<I, F, O>>>>,
+    pub tree: Wrapper<Vec<Node<I, F, O>>>,
     pub meta: Wrapper<SharedMetadata>,
 }
 
@@ -41,7 +41,7 @@ where
     O: Send + Sync + Clone + Display,
 {
     pub content: Content<I, F, O>,
-    pub children: Vec<Wrapper<Node<I, F, O>>>,
+    pub children: Wrapper<Vec<Node<I, F, O>>>,
 }
 
 #[derive(Debug, Default, Clone)]
