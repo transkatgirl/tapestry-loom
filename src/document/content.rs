@@ -13,7 +13,8 @@ pub enum Content<I: Display, F, O: Display> {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct SharedMetadata {
-    pub labels: HashMap<Uuid, String>,
+    pub authors: HashMap<Uuid, String>,
+    pub generators: HashMap<Uuid, String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]

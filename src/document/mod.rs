@@ -9,6 +9,7 @@ pub mod content;
 use content::{Content, SharedMetadata};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
+#[allow(clippy::type_complexity)]
 pub struct Document<I, F, O>
 where
     I: Send + Sync + Clone + Display,
@@ -16,7 +17,22 @@ where
     O: Send + Sync + Clone + Display,
 {
     pub tree: Wrapper<Arena<Wrapper<Content<I, F, O>>>>,
+
     pub meta: Wrapper<SharedMetadata>,
+}
+
+impl<I, F, O> Document<I, F, O>
+where
+    I: Send + Sync + Clone + Display,
+    F: Send + Sync + Clone,
+    O: Send + Sync + Clone + Display,
+{
+    pub fn new() -> Self {
+        Self {
+            tree: Wrapper::new(Arena::with_capacity(512)),
+            meta: Wrapper::new(SharedMetadata::default()),
+        }
+    }
 }
 
 #[derive(Debug, Default, Clone)]
