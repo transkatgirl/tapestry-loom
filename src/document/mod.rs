@@ -1,21 +1,31 @@
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_json::Value;
 use tokio::sync::{OwnedRwLockReadGuard, OwnedRwLockWriteGuard, RwLock};
-use uuid::Uuid;
+
+pub mod content;
+
+use content::{Content, SharedMetadata};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Document {
     pub tree: Wrapper<Node>,
-    pub labels: Wrapper<HashMap<Uuid, String>>,
+    pub meta: Wrapper<SharedMetadata>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Node {
     pub children: Vec<Wrapper<Node>>,
-    pub contents: Vec<NodeContent>,
+    pub contents: Vec<Content>,
+}
+
+impl Node {
+    pub fn shallow_clone(&self) -> Self {
+        Self {
+            children: Vec::new(),
+            contents: self.contents.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Default, Clone)]
@@ -45,36 +55,4 @@ impl<'de, T: Deserialize<'de>> Deserialize<'de> for Wrapper<T> {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         Ok(Wrapper::new(T::deserialize(deserializer)?))
     }
-}
-
-impl Node {
-    pub fn shallow_clone(&self) -> Self {
-        Self {
-            children: Vec::new(),
-            contents: self.contents.clone(),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum NodeContent {
-    Written(Authored<Value>),
-    Comment(Authored<String>),
-    Generated(Generated<Value, Value>),
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
-pub struct Authored<T> {
-    pub author: Uuid,
-    pub modified: DateTime<Utc>,
-    pub content: T,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
-pub struct Generated<I, O> {
-    pub generator: Uuid,
-    pub start: DateTime<Utc>,
-    pub finish: DateTime<Utc>,
-    pub input: I,
-    pub output: O,
 }
