@@ -2,6 +2,7 @@
 
 mod backend;
 mod document;
+mod library;
 mod ui;
 
 #[tokio::main]
