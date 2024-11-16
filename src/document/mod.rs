@@ -1,5 +1,6 @@
 use std::{fmt::Display, sync::Arc};
 
+use indextree::Arena;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use tokio::sync::{OwnedRwLockReadGuard, OwnedRwLockWriteGuard, RwLock};
 
@@ -14,33 +15,8 @@ where
     F: Send + Sync + Clone,
     O: Send + Sync + Clone + Display,
 {
-    pub tree: Wrapper<Node<I, F, O>>,
+    pub tree: Wrapper<Arena<Wrapper<Content<I, F, O>>>>,
     pub meta: Wrapper<SharedMetadata>,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct Node<I, F, O>
-where
-    I: Send + Sync + Clone + Display,
-    F: Send + Sync + Clone,
-    O: Send + Sync + Clone + Display,
-{
-    pub children: Vec<Wrapper<Node<I, F, O>>>,
-    pub contents: Vec<Content<I, F, O>>,
-}
-
-impl<I, F, O> Node<I, F, O>
-where
-    I: Send + Sync + Clone + Display,
-    F: Send + Sync + Clone,
-    O: Send + Sync + Clone + Display,
-{
-    pub fn shallow_clone(&self) -> Self {
-        Self {
-            children: Vec::new(),
-            contents: self.contents.clone(),
-        }
-    }
 }
 
 #[derive(Debug, Default, Clone)]
