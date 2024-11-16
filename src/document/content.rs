@@ -4,8 +4,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub enum Content<I: Display, F, O: Display> {
+    #[default]
+    None,
     Written(Authored<I>),
     Comment(Authored<String>),
     Generated(Generated<F, O>),

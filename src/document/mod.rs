@@ -15,22 +15,8 @@ where
     F: Send + Sync + Clone,
     O: Send + Sync + Clone + Display,
 {
-    pub tree: Wrapper<Vec<Node<I, F, O>>>,
+    pub tree: Wrapper<Node<I, F, O>>,
     pub meta: Wrapper<SharedMetadata>,
-}
-
-impl<I, F, O> Document<I, F, O>
-where
-    I: Send + Sync + Clone + Display,
-    F: Send + Sync + Clone,
-    O: Send + Sync + Clone + Display,
-{
-    pub fn new() -> Self {
-        Self {
-            tree: Wrapper::new(Vec::new()),
-            meta: Wrapper::new(SharedMetadata::default()),
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -40,8 +26,40 @@ where
     F: Send + Sync + Clone,
     O: Send + Sync + Clone + Display,
 {
-    pub content: Content<I, F, O>,
-    pub children: Wrapper<Vec<Node<I, F, O>>>,
+    content: Content<I, F, O>,
+    pub children: Vec<Wrapper<Node<I, F, O>>>,
+}
+
+impl<I, F, O> Node<I, F, O>
+where
+    I: Send + Sync + Clone + Display,
+    F: Send + Sync + Clone,
+    O: Send + Sync + Clone + Display,
+{
+    pub fn new(content: Content<I, F, O>) -> Self {
+        Self {
+            content,
+            children: Vec::new(),
+        }
+    }
+
+    pub fn content(&self) -> &Content<I, F, O> {
+        &self.content
+    }
+}
+
+impl<I, F, O> Default for Node<I, F, O>
+where
+    I: Send + Sync + Clone + Display,
+    F: Send + Sync + Clone,
+    O: Send + Sync + Clone + Display,
+{
+    fn default() -> Self {
+        Self {
+            content: Content::default(),
+            children: Vec::new(),
+        }
+    }
 }
 
 #[derive(Debug, Default, Clone)]
