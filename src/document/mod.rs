@@ -1,6 +1,5 @@
 use std::{fmt::Display, sync::Arc};
 
-use indextree::Arena;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use tokio::sync::{OwnedRwLockReadGuard, OwnedRwLockWriteGuard, RwLock};
 
@@ -16,8 +15,7 @@ where
     F: Send + Sync + Clone,
     O: Send + Sync + Clone + Display,
 {
-    pub tree: Wrapper<Arena<Wrapper<Content<I, F, O>>>>,
-
+    tree: Wrapper<Vec<Wrapper<Node<I, F, O>>>>,
     pub meta: Wrapper<SharedMetadata>,
 }
 
@@ -29,10 +27,21 @@ where
 {
     pub fn new() -> Self {
         Self {
-            tree: Wrapper::new(Arena::with_capacity(512)),
+            tree: Wrapper::new(Vec::new()),
             meta: Wrapper::new(SharedMetadata::default()),
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Node<I, F, O>
+where
+    I: Send + Sync + Clone + Display,
+    F: Send + Sync + Clone,
+    O: Send + Sync + Clone + Display,
+{
+    pub content: Content<I, F, O>,
+    pub children: Vec<Wrapper<Node<I, F, O>>>,
 }
 
 #[derive(Debug, Default, Clone)]
